@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 감정 분석 결과 | Mood Check ✨</title>
+    <link rel="stylesheet" href="viral-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .video-list {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+        .video-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        .video-thumbnail {
+            width: 120px;
+            height: 67.5px;
+            border-radius: 6px;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        .video-info {
+            flex: 1;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .video-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .toggle-videos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            color: #666;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .toggle-videos:hover {
+            background: #e0e0e0;
+        }
+        .toggle-videos .icon {
+            transition: transform 0.3s ease;
+        }
+        .toggle-videos.hidden .icon {
+            transform: rotate(180deg);
+        }
+        .hidden-content {
+            filter: blur(5px);
+            user-select: none;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .video-content {
+            transition: all 0.3s ease;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        .video-content.hidden {
+            max-height: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .insight-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .insight-card h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .insight-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .trend-arrow {
+            font-size: 24px;
+            margin: 0 8px;
+        }
+
+        .emotion-trend {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 16px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="tag">#통합분석결과</div>
+            
+            <div class="header">
+                <h1>통합 감정 분석 리포트 🎯</h1>
+                <p id="timestamp">분석 일시: </p>
+            </div>
+
+            <div class="video-list">
+                <button class="toggle-videos" onclick="toggleVideoVisibility()">
+                    <span class="icon">▼</span> 분석된 영상 목록 보이기
+                </button>
+                <div id="videoList" class="video-content">
+                    <!-- 영상 목록이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+
+            <div class="emotion-chart-container">
+                <canvas id="emotionChart"></canvas>
+            </div>
+
+            <div class="emotion-list" id="emotionList">
+                <!-- 감정 항목들이 여기에 동적으로 추가됩니다 -->
+            </div>
+
+            <div class="analysis-section">
+                <h3>✨ 통합 인사이트</h3>
+                <div id="analysisContent"></div>
+            </div>
+
+            <button class="button" onclick="window.location.href='/'">
+                결과 공유하기 ✨
+            </button>
+
+            <div class="hashtags">
+                #감정분석 #멘탈케어 #셀프케어 #힐링
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isVideoListHidden = false;
+
+        function toggleVideoVisibility() {
+            const videoList = document.getElementById('videoList');
+            const toggleButton = document.querySelector('.toggle-videos');
+            isVideoListHidden = !isVideoListHidden;
+            
+            videoList.classList.toggle('hidden', isVideoListHidden);
+            toggleButton.classList.toggle('hidden', isVideoListHidden);
+            
+            // 버튼 텍스트 업데이트
+            toggleButton.innerHTML = isVideoListHidden ? 
+                '<span class="icon">▼</span> 분석된 영상 목록 보이기' : 
+                '<span class="icon">▲</span> 분석된 영상 목록 숨기기';
+        }
+
+        function getVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        async function fetchVideoInfo(videoId) {
+            // 실제로는 YouTube Data API를 사용해야 하지만, 예시에서는 데이터에서 제공된 정보 사용
+            return {
+                title: '분석된 YouTube 영상',
+                thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+            };
+        }
+
+        function displayVideoList(videos) {
+            const videoList = document.getElementById('videoList');
+            videoList.innerHTML = '';
+
+            videos.forEach(async (video) => {
+                const videoId = getVideoId(video.url);
+                if (!videoId) return;
+
+                const videoInfo = await fetchVideoInfo(videoId);
+                const videoDate = new Date(video.timestamp);
+                const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).format(videoDate).replace(/\. /g, '.').replace(/:\s*/g, ':');
+
+                const videoItem = document.createElement('div');
+                videoItem.className = 'video-item';
+                videoItem.innerHTML = `
+                    <img class="video-thumbnail" src="${videoInfo.thumbnail}" alt="썸네일">
+                    <div class="video-info">
+                        <div class="video-title">${video.title || videoInfo.title}</div>
+                        <div class="video-date">${formattedDate}</div>
+                    </div>
+                `;
+                videoList.appendChild(videoItem);
+            });
+        }
+
+        function createEmotionChart(emotions) {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            const colors = ['#FF9999', '#99CCFF', '#99FF99'];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: emotions.map(e => e.name),
+                    datasets: [{
+                        data: emotions.map(e => e.percentage),
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        spacing: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function getEmoji(emotion) {
+            const emojiMap = {
+                '희망': '🌟',
+                '열정': '🔥',
+                '평온': '😌',
+                '불안': '😟',
+                '무기력': '😔',
+                '분노': '😠',
+                '기쁨': '😊',
+                '슬픔': '😢'
+            };
+            return emojiMap[emotion] || '✨';
+        }
+
+        function displayResults(data) {
+            try {
+                // 타임스탬프 표시
+                const date = new Date(data.timestamp);
+                if (isNaN(date.getTime())) {
+                    document.getElementById('timestamp').textContent = '분석 일시: 데이터 없음';
+                } else {
+                    const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).format(date).replace(/\. /g, '.').replace(/:\s*/g, ':');
+                    document.getElementById('timestamp').textContent = `분석 일시: ${formattedDate}`;
+                }
+
+                // 감정 차트 생성
+                if (data.emotions && data.emotions.length > 0) {
+                    createEmotionChart(data.emotions);
+
+                    // 감정 목록 표시
+                    const emotionList = document.getElementById('emotionList');
+                    emotionList.innerHTML = ''; // 기존 내용 초기화
+                    data.emotions.forEach((emotion, index) => {
+                        const emotionItem = document.createElement('div');
+                        emotionItem.className = 'emotion-item';
+                        emotionItem.innerHTML = `
+                            <div class="emotion-emoji">${getEmoji(emotion.name)}</div>
+                            <div class="emotion-label">
+                                <span>${emotion.name}</span>
+                                <span class="emotion-percentage">${emotion.percentage}%</span>
+                            </div>
+                        `;
+                        emotionList.appendChild(emotionItem);
+                    });
+                }
+
+                // 통합 인사이트 표시
+                if (data.combined_insight) {
+                    const analysisContent = document.getElementById('analysisContent');
+                    const sections = data.combined_insight.split('\n\n');
+                    const formattedInsight = sections.map(section => {
+                        const [title, ...content] = section.split('\n');
+                        return `<div class="insight-section">
+                            <h4>${title}</h4>
+                            <p>${content.join('\n')}</p>
+                        </div>`;
+                    }).join('');
+                    analysisContent.innerHTML = formattedInsight;
+                }
+
+            } catch (error) {
+                console.error('결과 표시 중 오류 발생:', error);
+            }
+        }
+
+        // 결과 데이터 가져오기
+        fetch('/get-latest-result')
+            .then(response => response.json())
+            .then(data => {
+                console.log('받은 데이터:', data);  // 디버깅용
+                if (data.type === 'combined_analysis') {
+                    displayVideoList(data.individual_results);
+                }
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('결과를 불러오는데 실패했습니다.');
+            });
+    </script>
+</body>
+</html> 

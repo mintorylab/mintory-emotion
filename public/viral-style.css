@@ -1,0 +1,203 @@
+/* 공통 스타일 */
+:root {
+    --primary-color: #FF9999;
+    --background-color: #ffffff;
+    --card-background: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-radius: 30px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 기본 스타일 */
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+}
+
+/* 카드 스타일 */
+.card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+/* 태그 스타일 */
+.tag {
+    display: inline-block;
+    background-color: #FFE2E2;
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* 헤더 스타일 */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.header p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0.5rem 0;
+}
+
+/* 감정 차트 스타일 */
+.emotion-chart {
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+.emotion-item {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.emotion-emoji {
+    width: 2rem;
+    text-align: center;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+}
+
+.emotion-info {
+    flex: 1;
+}
+
+.emotion-bar-container {
+    flex: 1;
+}
+
+.emotion-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.emotion-percentage {
+    color: var(--text-secondary);
+}
+
+.emotion-bar {
+    height: 0.5rem;
+    background-color: #f0f0f0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.emotion-progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 0.25rem;
+    transition: width 0.8s ease;
+}
+
+/* 분석 결과 섹션 */
+.analysis-section {
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.analysis-section h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.analysis-section p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0.5rem 0;
+}
+
+/* 버튼 스타일 */
+.button {
+    width: 100%;
+    padding: 1rem;
+    background: #FF9999;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin: 1rem 0;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+}
+
+/* 해시태그 스타일 */
+.hashtags {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* 로딩 인디케이터 */
+.loading {
+    text-align: center;
+    padding: 1rem;
+    display: none;
+}
+
+.loading p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+/* 에러 메시지 */
+.error-message {
+    color: #ff4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+    
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .header h1 {
+        font-size: 1.25rem;
+    }
+} 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영상 업로드 | Mood Check ✨</title>
+    <link rel="stylesheet" href="viral-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>분석할 영상의 URL을 입력해주세요</h1>
+                <p>YouTube 영상 URL을 입력하시면 자동으로 분석을 시작합니다</p>
+            </div>
+
+            <div class="input-section">
+                <input type="url" 
+                       id="videoUrl" 
+                       class="input-field" 
+                       placeholder="YouTube URL을 입력해주세요">
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+
+            <div class="action-section">
+                <button class="button" onclick="analyzeVideo()">분석 시작하기</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>영상을 분석하고 있습니다...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function analyzeVideo() {
+            const videoUrl = document.getElementById('videoUrl').value;
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const selectedStyle = getSelectedStyle();
+
+            if (!videoUrl) {
+                errorMessage.textContent = 'URL을 입력해주세요';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    videoUrl,
+                    style: selectedStyle
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                window.location.href = '/result.html';
+            })
+            .catch(error => {
+                errorMessage.textContent = error.message || '분석 중 오류가 발생했습니다';
+                errorMessage.style.display = 'block';
+                loading.style.display = 'none';
+            });
+        }
+
+        function getSelectedStyle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('style') || 'comfort';
+        }
+    </script>
+</body>
+</html> 

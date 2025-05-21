@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube 감정 분석 | Mood Check ✨</title>
+  <link rel="stylesheet" href="viral-style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>원하는 감정 피드백 스타일을 선택하세요</h1>
+        <p>당신의 콘텐츠에 맞는 분석 스타일을 선택해주세요</p>
+      </div>
+
+      <div class="style-options">
+        <button class="style-button fact-button" onclick="selectStyle('fact')">
+          팩폭형
+          <div class="style-description">직설적이고 날카로운 피드백</div>
+        </button>
+        
+        <button class="style-button insight-button" onclick="selectStyle('insight')">
+          통찰형
+          <div class="style-description">감정과 맥락을 해석해주는 스타일</div>
+        </button>
+        
+        <button class="style-button comfort-button" onclick="selectStyle('comfort')">
+          위로형
+          <div class="style-description">공감과 응원을 중심으로 하는 피드백</div>
+        </button>
+      </div>
+
+      <div class="action-section">
+        <button class="button" onclick="analyzeRecent()">
+          최근 3개 영상 통합 분석
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectStyle(style) {
+      window.location.href = `/upload.html?style=${style}`;
+    }
+
+    function analyzeRecent() {
+      fetch('/analyze-recent', {
+        method: 'POST'
+      })
+      .then(response => response.json())
+      .then(data => {
+        window.location.href = "/combined-result.html";
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('분석 중 오류가 발생했습니다.');
+      });
+    }
+  </script>
+</body>
+</html>

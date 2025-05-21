@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>감정 분석 결과 | Mood Check ✨</title>
+    <link rel="stylesheet" href="viral-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 스타일별 테마 색상 */
+        .fact-theme {
+            --primary-color: #FF4B4B;
+            --secondary-color: #FFE5E5;
+        }
+        
+        .insight-theme {
+            --primary-color: #4B7BFF;
+            --secondary-color: #E5EDFF;
+        }
+        
+        .comfort-theme {
+            --primary-color: #4CAF50;
+            --secondary-color: #E8F5E9;
+        }
+
+        /* 스타일별 헤더 디자인 */
+        .fact-theme .header {
+            background: linear-gradient(135deg, #FF4B4B 0%, #FF7676 100%);
+        }
+        
+        .insight-theme .header {
+            background: linear-gradient(135deg, #4B7BFF 0%, #76A5FF 100%);
+        }
+        
+        .comfort-theme .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+        }
+
+        /* 스타일별 감정 프로그레스 바 */
+        .fact-theme .mood-progress {
+            background: var(--primary-color);
+        }
+        
+        .insight-theme .mood-progress {
+            background: var(--primary-color);
+        }
+        
+        .comfort-theme .mood-progress {
+            background: var(--primary-color);
+        }
+
+        .emotion-chart-container {
+            width: 300px;
+            margin: 20px auto;
+        }
+        .emotion-list {
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+        .emotion-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .emotion-label {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-left: 10px;
+        }
+        .emotion-percentage {
+            font-weight: bold;
+        }
+
+        .analysis-style-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .fact-style {
+            background-color: #FFE5E5;
+            color: #FF4B4B;
+        }
+        
+        .insight-style {
+            background-color: #E5EDFF;
+            color: #4B7BFF;
+        }
+        
+        .comfort-style {
+            background-color: #E8F5E9;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="tag">#감정분석결과</div>
+                <h1>나의 감정 분석 리포트 🎯</h1>
+                <p id="timestamp">분석 일시: </p>
+                <div class="analysis-style-tag" id="analysisStyle"></div>
+            </div>
+
+            <div class="emotion-chart-container">
+                <canvas id="emotionChart"></canvas>
+            </div>
+
+            <div class="emotion-list" id="emotionList">
+                <!-- 감정 항목들이 여기에 동적으로 추가됩니다 -->
+            </div>
+
+            <div class="analysis-section">
+                <h3>✨ 감정 인사이트</h3>
+                <div id="analysisContent"></div>
+            </div>
+
+            <div class="analysis-section">
+                <h3>💝 감정 케어 팁</h3>
+                <div id="careTips"></div>
+            </div>
+
+            <button class="button" onclick="window.location.href='/'">
+                결과 공유하기 ✨
+            </button>
+
+            <div class="hashtags">
+                #감정분석 #멘탈케어 #셀프케어 #힐링
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL에서 스타일 파라미터 가져오기
+        function getAnalysisStyle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('style') || 'insight'; // 기본값은 insight
+        }
+
+        // 스타일에 따른 테마 적용
+        function applyTheme() {
+            const style = getAnalysisStyle();
+            document.body.className = `${style}-theme`;
+        }
+
+        function getEmoji(emotion) {
+            const emojiMap = {
+                '불안': '😟',
+                '무기력': '😔',
+                '분노': '😠',
+                '기쁨': '😊',
+                '슬픔': '😢',
+                '희망': '🌟',
+                '걱정': '😰',
+                '평온': '😌'
+            };
+            return emojiMap[emotion] || '🤔';
+        }
+
+        function createEmotionChart(emotions) {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            const colors = ['#FF9999', '#99CCFF', '#99FF99'];
+            
+            new Chart(ctx, {
+                type: 'doughnut',  // 도넛 차트로 변경
+                data: {
+                    labels: emotions.map(e => e.name),
+                    datasets: [{
+                        data: emotions.map(e => e.percentage),
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        borderRadius: 5,  // 모서리를 둥글게
+                        spacing: 2  // 조각 사이 간격
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '60%',  // 도넛 홀 크기
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function getStyleEmoji(style) {
+            const emojiMap = {
+                'fact': '🎯',
+                'insight': '💡',
+                'comfort': '💝'
+            };
+            return emojiMap[style] || '✨';
+        }
+
+        function getStyleName(style) {
+            const nameMap = {
+                'fact': '팩폭형',
+                'insight': '통찰형',
+                'comfort': '위로형'
+            };
+            return nameMap[style] || '기본';
+        }
+
+        function displayAnalysisStyle(style) {
+            const styleTag = document.getElementById('analysisStyle');
+            const styleName = getStyleName(style);
+            const emoji = getStyleEmoji(style);
+            styleTag.textContent = `${emoji} ${styleName} 분석`;
+            styleTag.className = `analysis-style-tag ${style}-style`;
+        }
+
+        function displayResults(data) {
+            // 스타일 적용
+            applyTheme();
+
+            // 분석 스타일 표시
+            const style = getAnalysisStyle();
+            displayAnalysisStyle(style);
+
+            // 타임스탬프 표시
+            try {
+                const date = new Date(data.timestamp);
+                if (isNaN(date.getTime())) {
+                    document.getElementById('timestamp').textContent = '분석 일시: 데이터 없음';
+                } else {
+                    const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).format(date).replace(/\. /g, '.').replace(/:\s*/g, ':');
+                    document.getElementById('timestamp').textContent = `분석 일시: ${formattedDate}`;
+                }
+            } catch (error) {
+                console.error('날짜 변환 오류:', error);
+                document.getElementById('timestamp').textContent = '분석 일시: 데이터 없음';
+            }
+
+            // 감정 차트 생성
+            createEmotionChart(data.emotions);
+
+            // 감정 목록 표시
+            const emotionList = document.getElementById('emotionList');
+            emotionList.innerHTML = ''; // 기존 내용 초기화
+            data.emotions.forEach((emotion, index) => {
+                const emotionItem = document.createElement('div');
+                emotionItem.className = 'emotion-item';
+                emotionItem.innerHTML = `
+                    <div class="emotion-emoji">${getEmoji(emotion.name)}</div>
+                    <div class="emotion-label">
+                        <span>${emotion.name}</span>
+                        <span class="emotion-percentage">${emotion.percentage}%</span>
+                    </div>
+                `;
+                emotionList.appendChild(emotionItem);
+            });
+
+            // 분석 결과 표시
+            const analysisContent = document.getElementById('analysisContent');
+            const careTips = document.getElementById('careTips');
+            
+            // 분석 내용을 줄바꿈으로 구분하여 분리
+            const sections = data.analysis ? data.analysis.split('\n\n') : [];
+            
+            // 첫 번째 섹션은 감정 인사이트에 표시
+            analysisContent.innerHTML = sections[0] ? 
+                `<p>${sections[0]}</p>` : 
+                '<p>분석 결과가 없습니다.</p>';
+            
+            // 두 번째 섹션은 케어 팁에 표시
+            careTips.innerHTML = sections[1] ? 
+                `<p>${sections[1]}</p>` : 
+                '<p>케어 팁이 없습니다.</p>';
+        }
+
+        // 결과 데이터 가져오기
+        fetch('/get-latest-result')
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('결과를 불러오는데 실패했습니다.');
+            });
+    </script>
+</body>
+</html> 
