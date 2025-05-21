@@ -1,0 +1,36 @@
+{
+    "type": "combined_analysis",
+    "timestamp": "2024-05-21T12:00:00",
+    "emotions": [
+        {
+            "name": "희망",
+            "percentage": 40
+        },
+        {
+            "name": "열정",
+            "percentage": 35
+        },
+        {
+            "name": "평온",
+            "percentage": 25
+        }
+    ],
+    "individual_results": [
+        {
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "timestamp": "2024-05-21T11:30:00",
+            "title": "첫 번째 분석 영상"
+        },
+        {
+            "url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+            "timestamp": "2024-05-21T11:45:00",
+            "title": "두 번째 분석 영상"
+        },
+        {
+            "url": "https://www.youtube.com/watch?v=xo1VInw-SKc",
+            "timestamp": "2024-05-21T12:00:00",
+            "title": "세 번째 분석 영상"
+        }
+    ],
+    "combined_insight": "1. 전반적인 감정 패턴\n최근 3개의 영상에서 희망적이고 열정적인 감정이 주를 이루고 있으며, 전반적으로 긍정적인 정서가 강하게 나타납니다.\n\n2. 시청자의 심리 상태 추정\n시청자들은 동기부여와 자기계발에 대한 강한 관심을 보이고 있으며, 미래에 대한 긍정적인 기대감을 가지고 있습니다.\n\n3. 앞으로의 컨텐츠 방향성 제안\n현재의 긍정적이고 동기부여가 되는 콘텐츠를 유지하면서, 실천 가능한 구체적인 방법론을 더 추가하면 좋을 것 같습니다.\n\n4. 전문가의 조언\n꾸준한 성장과 발전을 위해서는 현재의 열정을 지속가능한 형태로 유지하는 것이 중요합니다. 중간중간 휴식과 재충전의 시간도 가지시길 추천드립니다."
+} 

@@ -1,0 +1,20 @@
+{
+    "video_url": "https://www.youtube.com/watch?v=example",
+    "style": "insight",
+    "timestamp": "2024-05-21T12:00:00",
+    "analysis": "이 영상에서는 전반적으로 긍정적이고 희망적인 메시지가 두드러지게 나타납니다. 화자의 어조와 내용에서 자신감과 열정이 강하게 느껴지며, 시청자들에게 동기부여를 제공하고 있습니다.\n\n스트레스 해소를 위한 조언:\n1. 규칙적인 운동과 충분한 휴식\n2. 주변 사람들과의 긍정적인 소통\n3. 자신만의 취미 활동 즐기기",
+    "emotions": [
+        {
+            "name": "희망",
+            "percentage": 45
+        },
+        {
+            "name": "열정",
+            "percentage": 30
+        },
+        {
+            "name": "평온",
+            "percentage": 25
+        }
+    ]
+} 
